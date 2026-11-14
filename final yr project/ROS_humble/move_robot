@@ -1,0 +1,66 @@
+Before starting:
+----------------
+sudo ip addr add 192.168.1.100/24 dev enp0s31f6
+sudo ip link set enp0s31f6 up
+ip addr show enp0s31f6
+-----------------------
+
+
+Start commands
+source $HOME/colcon_ws/install/local_setup.bash
+source /opt/ros/humble/setup.bash
+source $HOME/microros_ws/install/local_setup.bash
+source /home/karunya/ros2-starter-updated/install/setup.bash
+
+Enable/Disable Drives
+ros2 run cpp_pubsub enable_client
+ros2 run cpp_pubsub disable_client
+
+Agent
+ros2 launch moveit_resources_moto_moveit_config  yaskawa_hw.launch.py
+
+Rviz
+ros2 launch moveit_resources_moto_moveit_config  xy_start.launch.py 
+
+Terminal 1
+
+cd ~/gp8_flask_ws
+source $HOME/colcon_ws/install/local_setup.bash
+source /opt/ros/humble/setup.bash
+source venv/bin/activate
+python app.py
+
+(Open browser and type) - http://127.0.0.1:5000/
+
+
+Terminal 2
+
+cd ~/microros_ws
+source /opt/ros/humble/setup.bash
+source $HOME/microros_ws/install/local_setup.bash
+ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888
+
+Terminal 3
+
+source /opt/ros/humble/setup.bash
+curl -X POST http://localhost:5000/j1_plus
+curl -X POST http://localhost:5000/jog \
+  -H "Content-Type: application/json" \
+  -d '{"joint": 3, "delta": 2, "duration": 2}'
+  
+New Terminal (Ultrasonic)
+cd gp8_flask_ws
+source $HOME/colcon_ws/install/local_setup.bash
+source /opt/ros/humble/setup.bash
+source venv/bin/activate
+python ultrasonic_node.py
+
+cd ~/gp8_web_control/ros_gp8_ws
+rm -rf build install log
+colcon build
+source install/setup.bash
+ros2 run gp8_control ros_node
+
+YOUR_GITHUB_TOKEN
+
+

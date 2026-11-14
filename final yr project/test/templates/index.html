@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PHOENIX OS | Terminal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<!-- ══════════════════════════════
+     LOADING SCREEN
+══════════════════════════════ -->
+<div id="loading-screen">
+  <canvas id="canvas-tesseract"></canvas>
+  <div class="load-ui">
+    <h1 id="loading-text">INITIALIZING</h1>
+    <div class="status-bar">
+      <div class="progress" id="progress-bar"></div>
+    </div>
+    <div id="boot-log"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     DASHBOARD
+══════════════════════════════ -->
+<div id="dashboard" class="hidden">
+
+  <header>
+    <div class="hdr-left">
+      <span class="hdr-tag">GT:</span> 43018702 &nbsp;|&nbsp;
+      <span class="hdr-tag">NODE:</span> PHX-ALPHA &nbsp;|&nbsp;
+      <span class="hdr-tag">STATUS:</span> <span class="online">ONLINE</span>
+    </div>
+    <div class="hdr-center">⬡ PHOENIX OS v9.1 ⬡</div>
+    <div class="hdr-right">
+      <span id="clock">00:00:00</span> &nbsp;|&nbsp;
+      <span id="threat-level" class="threat-low">THREAT: LOW</span>
+    </div>
+  </header>
+
+  <div class="dash-grid">
+
+    <!-- COL 1 : Radar + Live Feed -->
+    <div class="col col-left">
+
+      <div class="panel scanner-panel">
+        <div class="panel-title">◈ RADAR SWEEP</div>
+        <div class="radar-wrap">
+          <canvas id="radar-canvas" width="170" height="170"></canvas>
+        </div>
+        <div class="radar-stats">
+          <div class="rs"><span>TARGETS</span><span id="r-targets">07</span></div>
+          <div class="rs"><span>LOCKED</span><span id="r-locked" class="c-red">02</span></div>
+          <div class="rs"><span>RANGE</span><span>8400 km</span></div>
+        </div>
+      </div>
+
+      <div class="panel feed-panel">
+        <div class="panel-title">◈ LIVE FEED</div>
+        <div id="terminal-log"></div>
+      </div>
+
+    </div>
+
+    <!-- COL 2 : Map + Signal Wave -->
+    <div class="col col-center">
+
+      <div class="panel map-panel">
+        <div class="panel-title">◈ GLOBAL SURVEILLANCE GRID</div>
+        <div class="map-wrap" id="map-wrap">
+          <svg id="map-svg"></svg>
+          <div id="map-tooltip" class="map-tip hidden"></div>
+        </div>
+        <div class="map-stats">
+          <div class="ms"><span class="ms-label">ACTIVE NODES</span><span class="ms-val" id="ms-nodes">247</span></div>
+          <div class="ms"><span class="ms-label">DATA INTERCEPTED</span><span class="ms-val" id="ms-data">4.7 TB</span></div>
+          <div class="ms"><span class="ms-label">UPTIME</span><span class="ms-val" id="ms-uptime">99.9%</span></div>
+          <div class="ms"><span class="ms-label">ENCRYPTION</span><span class="ms-val c-green">AES-512</span></div>
+        </div>
+      </div>
+
+      <div class="panel wave-panel">
+        <div class="panel-title">◈ SIGNAL INTERCEPT</div>
+        <canvas id="wave-canvas"></canvas>
+      </div>
+
+    </div>
+
+    <!-- COL 3 : Gauges + Ops + Terminal -->
+    <div class="col col-right">
+
+      <div class="panel gauge-panel">
+        <div class="panel-title">◈ SYSTEM VITALS</div>
+        <div class="gauges-row">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 100 100" class="gauge-svg">
+              <circle cx="50" cy="50" r="38" class="g-bg"/>
+              <circle cx="50" cy="50" r="38" class="g-ring" id="g-cpu" style="stroke:#00f3ff"/>
+            </svg>
+            <div class="g-label">CPU<br/><span id="gv-cpu">78%</span></div>
+          </div>
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 100 100" class="gauge-svg">
+              <circle cx="50" cy="50" r="38" class="g-bg"/>
+              <circle cx="50" cy="50" r="38" class="g-ring" id="g-mem" style="stroke:#00ffaa"/>
+            </svg>
+            <div class="g-label">MEM<br/><span id="gv-mem">61%</span></div>
+          </div>
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 100 100" class="gauge-svg">
+              <circle cx="50" cy="50" r="38" class="g-bg"/>
+              <circle cx="50" cy="50" r="38" class="g-ring" id="g-net" style="stroke:#ff6600"/>
+            </svg>
+            <div class="g-label">NET<br/><span id="gv-net">45%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel ops-panel">
+        <div class="panel-title">◈ OPERATIONS</div>
+        <div class="ops-grid">
+          <button class="op-btn" data-op="coords">⌖ FIND COORDINATES</button>
+          <button class="op-btn danger" data-op="hack-phones">☎ HACK ALL CELL PHONES</button>
+          <button class="op-btn" data-op="sat-link">◉ ESTABLISH SAT LINK</button>
+          <button class="op-btn danger" data-op="blackout">⚡ TRIGGER BLACKOUT</button>
+          <button class="op-btn" data-op="decrypt">⚿ DECRYPT UPLINK</button>
+          <button class="op-btn danger" data-op="wipe">✕ REMOTE WIPE TARGET</button>
+          <button class="op-btn" data-op="trace">⬡ TRACE IP SOURCE</button>
+          <button class="op-btn danger" data-op="intercept">◎ INTERCEPT COMMS</button>
+        </div>
+      </div>
+
+      <div class="panel terminal-panel">
+        <div class="panel-title">◈ PHOENIX TERMINAL v9.1</div>
+        <div id="phx-terminal">
+          <div id="term-output"></div>
+          <div id="term-input-row">
+            <span id="term-prompt">PHX@ALPHA:~$</span>
+            <input id="term-input" type="text" autocomplete="off" spellcheck="false" autofocus/>
+            <div id="term-cursor-indicator"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /.dash-grid -->
+
+  <!-- Operation execution modal -->
+  <div id="op-modal" class="hidden">
+    <div id="op-modal-inner">
+      <div id="op-modal-title">EXECUTING...</div>
+      <div id="op-modal-bar"><div id="op-modal-fill"></div></div>
+      <div id="op-modal-log"></div>
+    </div>
+  </div>
+
+</div><!-- /#dashboard -->
+
+<script src="static/scripts.js"></script>
+</body>
+</html>

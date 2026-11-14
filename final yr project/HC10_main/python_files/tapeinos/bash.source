@@ -1,0 +1,4 @@
+source /opt/ros/humble/setup.bash
+source $HOME/colcon_ws/install/local_setup.bash
+source $HOME/microros_ws/install/local_setup.bash
+source /home/karunya/Desktop/HC10_main/ros2-starter-updated/install/setup.bash

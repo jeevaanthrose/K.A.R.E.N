@@ -1,0 +1,32 @@
+NOVELTY
+-------
+
+VISION
+
+1) The camera system works with any low-cost 2D camera, unlike standard setups that rely on high-end cameras and proprietary integration software.
+2) The system provides a built-in workflow to connect and perform different tasks without requiring users to manually write code.
+3) The camera system is easy to set up, with minimal effort. Calibration and object tracking are handled internally, making it user-friendly.
+
+
+ARCHITECTURE
+
+1) Existing systems such as MotoSim are proprietary and have a steep learning curve. Our system is simpler, easier to use, and can be extended or updated based on user needs.
+2) The system is designed for users with little to no programming knowledge and features a simple control dashboard-like interface.
+
+
+SOFTWARE
+
+1) The software can be easily deployed on both Windows and Linux using containerization.
+2) It provides a plug-and-play mechanism, reducing the complexity of integrating sensors with industrial robots.
+
+
+ULTRASONIC
+
+1) The system supports multiple emergency stops by processing data from multiple sensors and triggering a stop when required.
+2) The distance between the user and the robot workspace can be manually set and dynamically adjusted for each sensor.
+
+
+LAN
+
+1) LAN allows high data transfer between the software and robot, enabling better control over the system.
+2) The risk of electrical shock is much lower with LAN (~1–5V) compared to Digital I/O (~24V DC).
